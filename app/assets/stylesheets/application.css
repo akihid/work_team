@@ -13,7 +13,3 @@
  *= require_tree .
  *= require_self
  */
-
- .margin_left_50{
-   margin-left: 50px;
- }

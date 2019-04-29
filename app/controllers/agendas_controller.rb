@@ -24,6 +24,9 @@ class AgendasController < ApplicationController
   def destroy
     if check_auth_destoy?
       @agenda.destroy 
+      @working_team.members.each do |member|
+        AgendaMailer.agenda_mail(member.email , @working_team.name, @agenda.title).deliver
+      end
       redirect_to dashboard_url, notice: 'アジェンダ削除に成功しました！'
     else
       redirect_to dashboard_url, notice: 'アジェンダを削除する権限がありません'
