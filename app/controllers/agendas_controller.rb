@@ -1,5 +1,5 @@
 class AgendasController < ApplicationController
-  # before_action :set_agenda, only: %i[show edit update destroy]
+  before_action :set_agenda, only: %i[show edit update destroy]
 
   def index
     @agendas = Agenda.all
@@ -21,6 +21,15 @@ class AgendasController < ApplicationController
     end
   end
 
+  def destroy
+    if check_auth_destoy?
+      @agenda.destroy 
+      redirect_to dashboard_url, notice: 'アジェンダ削除に成功しました！'
+    else
+      redirect_to dashboard_url, notice: 'アジェンダを削除する権限がありません'
+    end
+  end
+
   private
 
   def set_agenda
@@ -29,5 +38,13 @@ class AgendasController < ApplicationController
 
   def agenda_params
     params.fetch(:agenda, {}).permit %i[title description]
+  end
+
+  def check_auth_destoy?
+    if current_user.id == @agenda.user_id || current_user.id == @working_team.owner_id 
+      true
+    else
+      false
+    end
   end
 end

@@ -3,7 +3,6 @@
   <%= link_to dashboard_url, class: 'brand-link' do %>
     <span class="brand-text font-weight-light">DIVE INTO POST</span>
   <% end %>
-
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="user-panel mt-3 pb-3 mb-3">
@@ -34,8 +33,13 @@
               <i class="fa fa-circle-o nav-icon"></i>
               <p>
                 <%= agenda.title %>
+
+                <% if current_user.id == agenda.user_id || current_user.id == @working_team.owner_id %>
+                  <object><%= link_to '削除' , agenda_path(agenda.id) ,method: :delete , data:{confirm: "削除してもよろしいですか？"} ,  class: 'btn btn-danger btn-flat' ,style:'position: absolute; right: 2rem; top:1px;' %></object>
+                <% end %>
                 <i class="right fa fa-angle-left"></i>
               </p>
+                
             </a>
             <ul class="nav nav-treeview" style="display: block;">
               <% agenda.articles.each do |article| %>
