@@ -7,6 +7,11 @@ class ApplicationController < ActionController::Base
     user.save!
   end
 
+  def team_owner?(team)
+    false
+    true if current_user.id == team.owner_id 
+  end
+
   private
 
   def set_working_team
