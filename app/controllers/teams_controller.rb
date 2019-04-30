@@ -30,11 +30,15 @@ class TeamsController < ApplicationController
   end
 
   def update
-    if @team.update(team_params)
-      redirect_to @team, notice: 'チーム更新に成功しました！'
+    if params[:user_id]
+      authority_transfer
     else
-      flash.now[:error] = '保存に失敗しました、、'
-      render :edit
+      if @team.update(team_params)
+        redirect_to @team, notice: 'チーム更新に成功しました！'
+      else
+        flash.now[:error] = '保存に失敗しました、、'
+        render :edit
+      end
     end
   end
 
@@ -55,5 +59,17 @@ class TeamsController < ApplicationController
 
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
+  end
+
+  def authority_transfer
+    @team.owner_id = params[:user_id]
+    @email = params[:user_email]
+    if @team.update(team_params)
+      redirect_to @team, notice: '権限移動に成功しました！'
+      TransferMailer.transfer_mail(@email , @team.name).deliver
+    else
+      flash.now[:error] = '権限移動に失敗しました、、'
+      render :edit
+    end
   end
 end
