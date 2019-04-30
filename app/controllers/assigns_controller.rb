@@ -30,7 +30,7 @@ class AssignsController < ApplicationController
     unless check_auth_destoy?(assign)
       return 'ユーザーを削除する権限がありません' 
     end
-    
+
     if assigned_user == assign.team.owner
       'リーダーは削除できません。'
     elsif Assign.where(user_id: assigned_user.id).count == 1
@@ -53,7 +53,7 @@ class AssignsController < ApplicationController
   end
 
   def check_auth_destoy?(assign)
-    if current_user.id == assign.user_id || current_user.id == assign.team.owner_id 
+    if current_user.id == assign.user_id || team_owner?(assign.team)
       true
     else
       false
